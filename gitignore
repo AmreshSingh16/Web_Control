@@ -1,0 +1,39 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Packaging / build output ---
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# --- PyInstaller (for the .exe build) ---
+*.spec
+*.manifest
+
+# --- App-specific data (don't commit your personal blocklist) ---
+blocklist.json
+*.log
+
+# --- Editor / IDE ---
+.vscode/
+*.code-workspace
+.idea/
+
+# --- OS junk ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# --- Environment / secrets ---
+.env
