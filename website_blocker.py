@@ -17,6 +17,8 @@ import sys
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 
+from block_server import start_block_server
+
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
@@ -150,11 +152,14 @@ class WebsiteBlockerApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Website Blocker")
-        self.geometry("420x480")
+        self.geometry("420x510")
         self.resizable(False, False)
+
+        self.block_server = start_block_server()
 
         self._build_widgets()
         self._refresh_list()
+        self._show_server_status()
 
     def _build_widgets(self):
         header = tk.Label(self, text="Website Blocker", font=("Segoe UI", 16, "bold"))
@@ -207,10 +212,24 @@ class WebsiteBlockerApp(tk.Tk):
         refresh_btn.grid(row=0, column=1, padx=5)
 
         self.status_label = tk.Label(self, text="", font=("Segoe UI", 9), fg="green")
-        self.status_label.pack(pady=(0, 10))
+        self.status_label.pack(pady=(0, 4))
+
+        self.server_status_label = tk.Label(self, text="", font=("Segoe UI", 8), fg="gray")
+        self.server_status_label.pack(pady=(0, 12))
 
     def _set_status(self, message: str, ok: bool = True):
         self.status_label.config(text=message, fg="green" if ok else "red")
+
+    def _show_server_status(self):
+        if self.block_server:
+            self.server_status_label.config(
+                text="Block page: active (shown for HTTP sites)", fg="gray"
+            )
+        else:
+            self.server_status_label.config(
+                text="Block page: couldn't start (port 80 in use) — sites will just fail to load",
+                fg="orange",
+            )
 
     def _refresh_list(self):
         self.listbox.delete(0, tk.END)
