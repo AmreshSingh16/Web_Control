@@ -62,9 +62,16 @@ def write_hosts_lines(lines: list[str]) -> None:
 
 
 def get_blocked_domains() -> list[str]:
-    """Read the current list of domains inside our managed block."""
+    """Read the current list of domains inside our managed block.
+
+    Each domain is listed once even though we write both the apex
+    (e.g. reddit.com) and www. variant (e.g. www.reddit.com) as separate
+    hosts entries under the hood — the www. line is collapsed into its
+    apex domain here so the UI shows a single entry per site.
+    """
     lines = read_hosts_lines()
     domains = []
+    seen = set()
     inside = False
     for line in lines:
         stripped = line.strip()
@@ -77,7 +84,11 @@ def get_blocked_domains() -> list[str]:
         if inside and stripped and not stripped.startswith("#"):
             parts = stripped.split()
             if len(parts) >= 2:
-                domains.append(parts[1])
+                domain = parts[1]
+                canonical = domain[4:] if domain.startswith("www.") else domain
+                if canonical not in seen:
+                    seen.add(canonical)
+                    domains.append(canonical)
     return domains
 
 
